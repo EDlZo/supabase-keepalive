@@ -1,18 +1,20 @@
-name: Supabase Keep Alive
+name: Supabase Storage Keep Alive
 
 on:
   schedule:
-    - cron: "0 0 */5 * *"
+    - cron: "0 0 * * *"   # ทุกวัน (UTC)
   workflow_dispatch:
 
 jobs:
-  ping:
+  ping-storage:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Ping Supabase
+      - name: Ping Supabase Storage
         run: |
-          curl -s -o /dev/null -w "HTTP Status: %{http_code}\n" \
-            -H "apikey: ${{ secrets.SUPABASE_KEY }}" \
-            -H "Authorization: Bearer ${{ secrets.SUPABASE_KEY }}" \
-            https://xqnihyrtifxhgrklcdwq.supabase.co/rest/v1/
+          curl -s -o /dev/null -w "Storage Status: %{http_code}\n" \
+          -X POST "https://xqnihyrtifxhgrklcdwq.supabase.co/storage/v1/object/list/evidence-files" \
+          -H "apikey: ${{ secrets.SUPABASE_KEY }}" \
+          -H "Authorization: Bearer ${{ secrets.SUPABASE_KEY }}" \
+          -H "Content-Type: application/json" \
+          -d '{"limit":1}'
