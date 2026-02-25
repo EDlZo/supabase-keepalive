@@ -1,18 +1,26 @@
-name: Supabase Storage Keep Alive
+name: Supabase Storage Upload & Delete
 
 on:
   schedule:
-    - cron: "0 0 */6 * *"   # ทุก 6 วัน (UTC)
-  workflow_dispatch:
+    - cron: "0 0 */6 * *"   # ทุก 6 วัน
+  workflow_dispatch:        # กดรันเองได้ด้วย
 
 jobs:
-  ping-storage:
+  storage-job:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Ping Supabase Storage
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Upload file to Supabase Storage
         run: |
-          curl -s -o /dev/null -w "Storage Status: %{http_code}\n" \
-          -X GET "https://xqnihyrtifxhgrklcdwq.supabase.co/storage/v1/object/list/evidence-files" \
-          -H "apikey: ${{ secrets.SUPABASE_KEY }}" \
-          -H "Authorization: Bearer ${{ secrets.SUPABASE_KEY }}"
+          curl -X POST "https://xqnihyrtifxhgrklcdwq.supabase.co/storage/v1/object/evidence-files/test.txt" \
+            -H "Authorization: Bearer $SUPABASE_SERVICE_ROLE_KEY" \
+            -H "Content-Type: text/plain" \
+            --data "Hello from GitHub Actions 🚀"
+
+      - name: Delete file
+        run: |
+          curl -X DELETE "https://xqnihyrtifxhgrklcdwq.supabase.co/storage/v1/object/evidence-files/test.txt" \
+            -H "Authorization: Bearer $SUPABASE_SERVICE_ROLE_KEY"
