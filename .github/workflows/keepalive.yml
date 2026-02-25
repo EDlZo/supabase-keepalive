@@ -13,8 +13,6 @@ jobs:
       - name: Ping Supabase Storage
         run: |
           curl -s -o /dev/null -w "Storage Status: %{http_code}\n" \
-          -X POST "https://xqnihyrtifxhgrklcdwq.supabase.co/storage/v1/object/list/evidence-files" \
+          -X GET "https://xqnihyrtifxhgrklcdwq.supabase.co/storage/v1/object/list/evidence-files" \
           -H "apikey: ${{ secrets.SUPABASE_KEY }}" \
-          -H "Authorization: Bearer ${{ secrets.SUPABASE_KEY }}" \
-          -H "Content-Type: application/json" \
-          -d '{"limit":1}'
+          -H "Authorization: Bearer ${{ secrets.SUPABASE_KEY }}"
