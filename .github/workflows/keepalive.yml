@@ -2,25 +2,28 @@ name: Supabase Storage Upload & Delete
 
 on:
   schedule:
-    - cron: "0 0 */6 * *"   # ทุก 6 วัน
-  workflow_dispatch:        # กดรันเองได้ด้วย
+    - cron: "0 0 */6 * *"
+  workflow_dispatch:
 
 jobs:
   storage-job:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-
       - name: Upload file to Supabase Storage
         run: |
+          echo "Uploading file..."
+
           curl -X POST "https://xqnihyrtifxhgrklcdwq.supabase.co/storage/v1/object/evidence-files/test.txt" \
             -H "Authorization: Bearer $SUPABASE_SERVICE_ROLE_KEY" \
+            -H "apikey: $SUPABASE_SERVICE_ROLE_KEY" \
             -H "Content-Type: text/plain" \
             --data "Hello from GitHub Actions 🚀"
 
       - name: Delete file
         run: |
+          echo "Deleting file..."
+
           curl -X DELETE "https://xqnihyrtifxhgrklcdwq.supabase.co/storage/v1/object/evidence-files/test.txt" \
-            -H "Authorization: Bearer $SUPABASE_SERVICE_ROLE_KEY"
+            -H "Authorization: Bearer $SUPABASE_SERVICE_ROLE_KEY" \
+            -H "apikey: $SUPABASE_SERVICE_ROLE_KEY"
